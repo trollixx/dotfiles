@@ -64,8 +64,7 @@
             "colorScheme": "Gruvbox Dark",
             "font":
             {
-                "face": "Google Sans Code",
-                "size": 12
+                "face": "Google Sans Code"
             }
         },
         "list":
