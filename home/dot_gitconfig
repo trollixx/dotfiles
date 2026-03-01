@@ -1,0 +1,14 @@
+[credential]
+	helper = manager
+[user]
+	name = Oleg Shparber
+	email = trollixx@gmail.com
+[init]
+	defaultBranch = main
+[core]
+	autocrlf = input
+	eol = lf
+[pull]
+	ff = only
+[push]
+	autoSetupRemote = true
