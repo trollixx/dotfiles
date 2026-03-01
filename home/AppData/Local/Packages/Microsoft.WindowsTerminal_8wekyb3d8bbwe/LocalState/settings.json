@@ -16,10 +16,6 @@
             "id": "User.paste"
         },
         {
-            "command": "find",
-            "id": "User.find"
-        },
-        {
             "command": 
             {
                 "action": "splitPane",
@@ -27,6 +23,10 @@
                 "splitMode": "duplicate"
             },
             "id": "User.splitPane.A6751878"
+        },
+        {
+            "command": "find",
+            "id": "User.find"
         }
     ],
     "copyFormatting": "none",
@@ -39,12 +39,12 @@
             "keys": "ctrl+c"
         },
         {
-            "id": "User.paste",
-            "keys": "ctrl+v"
-        },
-        {
             "id": "User.find",
             "keys": "ctrl+shift+f"
+        },
+        {
+            "id": "User.paste",
+            "keys": "ctrl+v"
         },
         {
             "id": "User.splitPane.A6751878",
@@ -92,6 +92,18 @@
                 "hidden": false,
                 "name": "Arch Linux",
                 "source": "Microsoft.WSL"
+            },
+            {
+                "guid": "{ad72fe3a-fdf9-5e43-8b60-a4016eadec79}",
+                "hidden": false,
+                "name": "Developer Command Prompt for VS 2022",
+                "source": "Windows.Terminal.VisualStudio"
+            },
+            {
+                "guid": "{dd509814-051e-52ce-859a-92c500b497fb}",
+                "hidden": false,
+                "name": "Developer PowerShell for VS 2022",
+                "source": "Windows.Terminal.VisualStudio"
             }
         ]
     },
