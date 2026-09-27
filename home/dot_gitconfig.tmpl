@@ -1,0 +1,30 @@
+[user]
+	name = Oleg Shparber
+	email = {{ .email }}
+[init]
+	defaultBranch = main
+[core]
+	autocrlf = false
+	eol = lf
+[pull]
+	ff = only
+[push]
+	autoSetupRemote = true
+[alias]
+	co = checkout
+	br = branch
+	st = status
+[diff "lockb"]
+	textconv = bun
+	binary = true
+[gui]
+	fontdiff = -family \"Google Sans Code\" -size 9 -weight normal -slant roman -underline 0 -overstrike 0
+	gcwarning = false
+{{- if eq .chezmoi.os "windows" }}
+[credential]
+	helper = manager
+{{- end }}
+
+# Machine-specific settings (work identity, signing, proxies). Not managed by chezmoi.
+[include]
+	path = ~/.gitconfig.local
