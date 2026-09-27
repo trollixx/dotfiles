@@ -1,0 +1,6 @@
+# LF by default.
+* text=auto eol=lf
+
+# Total Commander needs CRLF.
+home/AppData/Roaming/GHISLER/*.bar text eol=crlf
+home/AppData/Roaming/GHISLER/*.ini text eol=crlf
