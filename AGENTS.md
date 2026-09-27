@@ -7,4 +7,5 @@
 - **One tool or concern per commit.** If a change affects something README.md describes, update README.md in the same commit.
 - **Commit messages are a subject line only:** the tool as a prefix (`git:`, `wt:`, `tc:`, `pwsh:`, `chore:`, `docs:`), then the imperative mood (`git: add …`, not `git: added …` or a noun phrase). No body.
 - **No attribution.** Commit messages and PR descriptions get no `Co-Authored-By` trailers, session links, or "Generated with" footers.
+- **`chezmoi init` prompts need a terminal.** Answer them with flags keyed by prompt text: `chezmoi init --no-tty --promptChoice "Machine profile=personal" --promptString "Git email address=you@example.com"`.
 - **Verify with read-only commands:** `chezmoi diff`, `chezmoi cat <target>`, `chezmoi managed`, and `chezmoi execute-template '<template>'`. Never edit a target file to test something.

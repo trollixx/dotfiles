@@ -1,0 +1,6 @@
+{{- /* Target paths skipped on this machine. Remember: ignored files are still cloned. */ -}}
+
+{{- if ne .chezmoi.os "windows" }}
+# Windows-only
+AppData/
+{{- end }}

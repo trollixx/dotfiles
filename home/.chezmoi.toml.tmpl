@@ -1,0 +1,15 @@
+{{- /* Answers are stored in ~/.config/chezmoi/chezmoi.toml; rerun `chezmoi init --prompt` to change them. */ -}}
+{{- $profile := promptChoiceOnce . "profile" "Machine profile" (list "personal" "work") "personal" -}}
+{{- $email := promptStringOnce . "email" "Git email address" -}}
+
+{{- $wsl := false -}}
+{{- if eq .chezmoi.os "linux" -}}
+{{-   if .chezmoi.kernel.osrelease | lower | contains "microsoft" -}}
+{{-     $wsl = true -}}
+{{-   end -}}
+{{- end -}}
+
+[data]
+    profile = {{ $profile | quote }}
+    email = {{ $email | quote }}
+    wsl = {{ $wsl }}
