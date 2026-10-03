@@ -4,3 +4,4 @@
 # Total Commander needs CRLF.
 home/AppData/Roaming/GHISLER/*.bar text eol=crlf
 home/AppData/Roaming/GHISLER/*.ini text eol=crlf
+home/AppData/Roaming/GHISLER/modify_*.ini text eol=lf

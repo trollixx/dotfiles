@@ -11,3 +11,6 @@ trim_trailing_whitespace = true
 
 [home/AppData/Roaming/GHISLER/*.{bar,ini}]
 end_of_line = crlf
+
+[home/AppData/Roaming/GHISLER/modify_*.ini]
+end_of_line = lf
