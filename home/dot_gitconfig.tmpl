@@ -6,23 +6,57 @@
 [core]
 	autocrlf = false
 	eol = lf
+[fetch]
+	prune = true
 [pull]
 	ff = only
 [push]
 	autoSetupRemote = true
+[advice]
+	skippedCherryPicks = false
 [alias]
+	# Status and history
+	st = status -sb
+	lg = log --oneline --graph --decorate --all
+	last = log -1 HEAD --stat
+	df = diff
+	dfs = diff --staged
+	# Branches
 	co = checkout
-	br = branch
-	st = status
+	cob = checkout -b
+	br = branch -vv
+	rb = rebase
+	# Staging and commits
+	aa = add --all
+	cm = commit -m
+	amend = commit --amend --no-edit
+	unstage = reset HEAD --
+	undo = reset --soft HEAD~1
+	# Remotes
+	up = pull upstream
+	pushu = push -u origin HEAD
+	reset-origin = !git fetch origin && git reset --hard origin/$(git branch --show-current)
+	# GitHub when port 22 is blocked
+	gh-443 = "!f() { git -c url.ssh://git@ssh.github.com:443/.insteadOf=git@github.com: \"$@\"; }; f"
+	gh-https = "!f() { git -c url.https://github.com/.insteadOf=git@github.com: \"$@\"; }; f"
 [diff "lockb"]
 	textconv = bun
 	binary = true
 [gui]
-	fontdiff = -family \"Google Sans Code\" -size 9 -weight normal -slant roman -underline 0 -overstrike 0
+	fontdiff = -family \"Google Sans Code\" -size 10 -weight normal -slant roman -underline 0 -overstrike 0
+	encoding = utf-8
 	gcwarning = false
 {{- if eq .chezmoi.os "windows" }}
 [credential]
 	helper = manager
+{{- end }}
+{{- if lookPath "gh" }}
+[credential "https://github.com"]
+	helper =
+	helper = !gh auth git-credential
+[credential "https://gist.github.com"]
+	helper =
+	helper = !gh auth git-credential
 {{- end }}
 
 # Machine-specific settings (work identity, signing, proxies). Not managed by chezmoi.
