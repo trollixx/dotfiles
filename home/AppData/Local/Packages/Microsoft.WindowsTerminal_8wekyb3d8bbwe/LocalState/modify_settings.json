@@ -1,0 +1,120 @@
+{{- /* chezmoi:modify-template */ -}}
+{{- /* Sets only the keys below. Terminal keeps everything else, including the profile list. */ -}}
+{{- $orig := dict -}}
+{{- $s := dict -}}
+{{- if .chezmoi.stdin }}{{ $orig = fromJsonc .chezmoi.stdin }}{{ $s = fromJsonc .chezmoi.stdin }}{{ end -}}
+
+{{- $pwsh := "{574e775e-4f2a-5b96-ac1e-a2962a402336}" -}}
+{{- $nu := "{d9535be7-f389-460f-9e6b-5348b366c002}" -}}
+{{- $cmd := "{0caa0dad-35be-5f56-a8ff-afceeeaa6101}" -}}
+{{- $winps := "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}" -}}
+{{- $hasNu := ne (lookPath "nu") "" -}}
+{{- $nuIcon := joinPath .chezmoi.homeDir "scoop/apps/nu/current/nu.exe" -}}
+
+{{- $s = setValueAtPath "copyFormatting" "none" $s -}}
+{{- $s = setValueAtPath "copyOnSelect" false $s -}}
+{{- $s = setValueAtPath "windowingBehavior" "useAnyExisting" $s -}}
+{{- $s = setValueAtPath "firstWindowPreference" "persistedWindowLayout" $s -}}
+{{- $s = setValueAtPath "newTabPosition" "afterCurrentTab" $s -}}
+{{- $s = setValueAtPath "disabledProfileSources" (list "Windows.Terminal.VisualStudio" "Windows.Terminal.Azure") $s -}}
+{{- $s = setValueAtPath "defaultProfile" (ternary $nu $pwsh $hasNu) $s -}}
+
+{{- $s = setValueAtPath "profiles.defaults.colorScheme" "Gruvbox Dark" $s -}}
+{{- $s = setValueAtPath "profiles.defaults.font.face" "GoogleSansCode Nerd Font" $s -}}
+{{- $s = setValueAtPath "profiles.defaults.font.size" 12 $s -}}
+{{- $s = setValueAtPath "profiles.defaults.bellStyle" "window" $s -}}
+{{- $s = setValueAtPath "profiles.defaults.historySize" 50000 $s -}}
+{{- $s = setValueAtPath "profiles.defaults.adjustIndistinguishableColors" "indexed" $s -}}
+
+{{- /* Nushell profile, only where nu is installed. */ -}}
+{{- if $hasNu -}}
+{{-   $nuProfile := dict "guid" $nu "name" "Nushell" "commandline" "nu.exe" "startingDirectory" "%USERPROFILE%" "hidden" false -}}
+{{-   if stat $nuIcon }}{{ $nuProfile = set $nuProfile "icon" $nuIcon }}{{ end -}}
+{{-   $profiles := list -}}
+{{-   $found := false -}}
+{{-   range (dig "profiles" "list" (list) $s) -}}
+{{-     if eq (get . "guid") $nu -}}
+{{-       $profiles = append $profiles (mergeOverwrite . $nuProfile) -}}
+{{-       $found = true -}}
+{{-     else -}}
+{{-       $profiles = append $profiles . -}}
+{{-     end -}}
+{{-   end -}}
+{{-   if not $found }}{{ $profiles = prepend $profiles $nuProfile }}{{ end -}}
+{{-   $s = setValueAtPath "profiles.list" $profiles $s -}}
+{{- end -}}
+
+{{- /* Actions and key bindings, matched by id. */ -}}
+{{- $actions := list
+      (dict "id" "User.copy.644BA8F2" "command" (dict "action" "copy" "singleLine" false))
+      (dict "id" "User.paste" "command" "paste")
+      (dict "id" "User.find" "command" "find")
+      (dict "id" "User.splitPane.A6751878" "command" (dict "action" "splitPane" "split" "auto" "splitMode" "duplicate"))
+      (dict "id" "User.sendNewLineInput" "command" (dict "action" "sendInput" "input" "\n"))
+      (dict "id" "User.newTab.PowerShellCoreAdmin" "name" "PowerShell (Admin)" "icon" "ms-appx:///ProfileIcons/pwsh.png" "command" (dict "action" "newTab" "profile" $pwsh "elevate" true))
+-}}
+{{- if $hasNu -}}
+{{-   $nuAdmin := dict "id" "User.newTab.NushellAdmin" "name" "Nushell (Admin)" "command" (dict "action" "newTab" "profile" $nu "elevate" true) -}}
+{{-   if stat $nuIcon }}{{ $nuAdmin = set $nuAdmin "icon" $nuIcon }}{{ end -}}
+{{-   $actions = append $actions $nuAdmin -}}
+{{- end -}}
+{{- $keybindings := list
+      (dict "id" "User.copy.644BA8F2" "keys" "ctrl+c")
+      (dict "id" "User.paste" "keys" "ctrl+v")
+      (dict "id" "User.find" "keys" "ctrl+shift+f")
+      (dict "id" "User.splitPane.A6751878" "keys" "alt+shift+d")
+      (dict "id" "User.sendNewLineInput" "keys" "shift+enter")
+-}}
+{{- $ids := list -}}
+{{- range $actions }}{{ $ids = append $ids .id }}{{ end -}}
+{{- $keys := list -}}
+{{- range $keybindings }}{{ $keys = append $keys .keys }}{{ end -}}
+
+{{- $merged := list -}}
+{{- range (get $s "actions" | default (list)) -}}
+{{-   if not (has (get . "id") $ids) }}{{ $merged = append $merged . }}{{ end -}}
+{{- end -}}
+{{- $s = set $s "actions" (concat $merged $actions) -}}
+
+{{- $merged = list -}}
+{{- range (get $s "keybindings" | default (list)) -}}
+{{-   if not (or (has (get . "id") $ids) (has (get . "keys") $keys)) }}{{ $merged = append $merged . }}{{ end -}}
+{{- end -}}
+{{- $s = set $s "keybindings" (concat $merged $keybindings) -}}
+
+{{- /* New-tab menu: shells first, admin and legacy shells in folders. "icon": null matches how Terminal saves entries. */ -}}
+{{- $menu := list -}}
+{{- if $hasNu }}{{ $menu = append $menu (dict "type" "profile" "profile" $nu "icon" nil) }}{{ end -}}
+{{- $menu = append $menu (dict "type" "profile" "profile" $pwsh "icon" nil) -}}
+{{- $menu = append $menu (dict "type" "separator") -}}
+{{- $menu = append $menu (dict "type" "remainingProfiles") -}}
+{{- $menu = append $menu (dict "type" "separator") -}}
+{{- $admin := list -}}
+{{- if $hasNu }}{{ $admin = append $admin (dict "type" "action" "id" "User.newTab.NushellAdmin" "icon" nil) }}{{ end -}}
+{{- $admin = append $admin (dict "type" "action" "id" "User.newTab.PowerShellCoreAdmin" "icon" nil) -}}
+{{- $menu = append $menu (dict "type" "folder" "name" "Admin" "inline" "never" "allowEmpty" false "icon" nil "entries" $admin) -}}
+{{- $legacy := list (dict "type" "profile" "profile" $cmd "icon" nil) (dict "type" "profile" "profile" $winps "icon" nil) -}}
+{{- $menu = append $menu (dict "type" "folder" "name" "Legacy" "inline" "never" "allowEmpty" false "icon" nil "entries" $legacy) -}}
+{{- $s = set $s "newTabMenu" $menu -}}
+
+{{- /* Gruvbox Dark, replacing any older copy. */ -}}
+{{- $gruvbox := dict
+      "name" "Gruvbox Dark"
+      "background" "#282828" "foreground" "#EBDBB2" "cursorColor" "#EBDBB2" "selectionBackground" "#665C54"
+      "black" "#282828" "red" "#CC241D" "green" "#98971A" "yellow" "#D79921"
+      "blue" "#458588" "purple" "#B16286" "cyan" "#689D6A" "white" "#A89984"
+      "brightBlack" "#928374" "brightRed" "#FB4934" "brightGreen" "#B8BB26" "brightYellow" "#FABD2F"
+      "brightBlue" "#83A598" "brightPurple" "#D3869B" "brightCyan" "#8EC07C" "brightWhite" "#EBDBB2"
+-}}
+{{- $schemes := list -}}
+{{- range (get $s "schemes" | default (list)) -}}
+{{-   if ne (get . "name") "Gruvbox Dark" }}{{ $schemes = append $schemes . }}{{ end -}}
+{{- end -}}
+{{- $s = set $s "schemes" (append $schemes $gruvbox) -}}
+
+{{- /* Keep Terminal's own formatting when nothing managed changed, so chezmoi status stays clean. */ -}}
+{{- if and .chezmoi.stdin (eq (toJson $orig) (toJson $s)) -}}
+{{-   .chezmoi.stdin -}}
+{{- else -}}
+{{-   toPrettyJson "    " $s -}}
+{{- end -}}
