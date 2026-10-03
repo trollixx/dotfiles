@@ -3,4 +3,5 @@
 {{- if ne .chezmoi.os "windows" }}
 # Windows-only
 AppData/
+.chezmoiscripts/windows/**
 {{- end }}
