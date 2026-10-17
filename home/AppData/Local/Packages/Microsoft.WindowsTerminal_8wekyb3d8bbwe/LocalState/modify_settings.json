@@ -25,7 +25,8 @@
 {{- $s = setValueAtPath "profiles.defaults.adjustIndistinguishableColors" "indexed" $s -}}
 
 {{- $s = setValueAtPath "profiles.defaults.font.face" "JetBrainsMonoNL Nerd Font" $s -}}
-{{- $s = setValueAtPath "profiles.defaults.font.size" 12 $s -}}
+{{- /* Font size depends on the screen, so 12 is only a starting point. A size set in Terminal wins. */ -}}
+{{- if not (dig "profiles" "defaults" "font" "size" nil $s) }}{{ $s = setValueAtPath "profiles.defaults.font.size" 12 $s }}{{ end -}}
 {{- $s = setValueAtPath "profiles.defaults.font.cellHeight" "1.1" $s -}}
 {{- $s = setValueAtPath "profiles.defaults.font.weight" "light" $s -}}
 
