@@ -20,11 +20,14 @@
 {{- $s = setValueAtPath "defaultProfile" (ternary $nu $pwsh $hasNu) $s -}}
 
 {{- $s = setValueAtPath "profiles.defaults.colorScheme" "Gruvbox Dark" $s -}}
-{{- $s = setValueAtPath "profiles.defaults.font.face" "GoogleSansCode Nerd Font" $s -}}
-{{- $s = setValueAtPath "profiles.defaults.font.size" 12 $s -}}
 {{- $s = setValueAtPath "profiles.defaults.bellStyle" "window" $s -}}
 {{- $s = setValueAtPath "profiles.defaults.historySize" 50000 $s -}}
 {{- $s = setValueAtPath "profiles.defaults.adjustIndistinguishableColors" "indexed" $s -}}
+
+{{- $s = setValueAtPath "profiles.defaults.font.face" "JetBrainsMonoNL Nerd Font" $s -}}
+{{- $s = setValueAtPath "profiles.defaults.font.size" 12 $s -}}
+{{- $s = setValueAtPath "profiles.defaults.font.cellHeight" "1.1" $s -}}
+{{- $s = setValueAtPath "profiles.defaults.font.weight" "light" $s -}}
 
 {{- /* Nushell profile, only where nu is installed. */ -}}
 {{- if $hasNu -}}
